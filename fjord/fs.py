@@ -12,10 +12,10 @@ import traceback
 
 from watchdog.events import FileSystemEventHandler
 
-from mynt.utils import abspath, get_logger, normpath
+from fjord.utils import abspath, get_logger, normpath
 
 
-logger = get_logger('mynt')
+logger = get_logger('fjord')
 
 
 class Directory(object):

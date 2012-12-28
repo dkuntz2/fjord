@@ -4,14 +4,14 @@ from __future__ import print_function, unicode_literals
 
 import sys
 
-from mynt.core import Mynt
-from mynt.exceptions import MyntException
+from fjord.core import Fjord
+from fjord.exceptions import FjordException
 
 
 def main():
     try:
-        Mynt()
-    except MyntException as e:
+        Fjord()
+    except FjordException as e:
         print(e)
         
         return e.code

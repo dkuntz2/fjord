@@ -19,18 +19,18 @@ from pygments.lexers import get_lexer_by_name
 from pygments.util import ClassNotFound
 from watchdog.observers import Observer
 
-from mynt import __version__
-from mynt.containers import Config, Page, Post
-from mynt.exceptions import ConfigException, OptionException, RendererException
-from mynt.fs import Directory, EventHandler, File
-from mynt.server import RequestHandler, Server
-from mynt.utils import absurl, get_logger, normpath, OrderedDict
+from fjord import __version__
+from fjord.containers import Config, Page, Post
+from fjord.exceptions import ConfigException, OptionException, RendererException
+from fjord.fs import Directory, EventHandler, File
+from fjord.server import RequestHandler, Server
+from fjord.utils import absurl, get_logger, normpath, OrderedDict
 
 
-logger = get_logger('mynt')
+logger = get_logger('fjord')
 
 
-class Mynt(object):
+class fjord(object):
     defaults = {
         'archive_layout': None,
         'archives_url': '/',
@@ -163,9 +163,9 @@ class Mynt(object):
     
     def _get_parser(self):
         try:
-            return load_entry_point('mynt', 'mynt.parsers.{0}'.format(self.config['markup']), self.config['parser'])
+            return load_entry_point('fjord', 'fjord.parsers.{0}'.format(self.config['markup']), self.config['parser'])
         except ImportError:
-            return __import__('mynt.parsers.{0}.{1}'.format(self.config['markup'], self.config['parser']), globals(), locals(), ['Parser'], -1).Parser
+            return __import__('fjord.parsers.{0}.{1}'.format(self.config['markup'], self.config['parser']), globals(), locals(), ['Parser'], -1).Parser
     
     def _get_path(self, url):
         parts = [self.dest.path] + url.split('/')
@@ -194,9 +194,9 @@ class Mynt(object):
     
     def _get_renderer(self):
         try:
-            return load_entry_point('mynt', 'mynt.renderers', self.config['renderer'])
+            return load_entry_point('fjord', 'fjord.renderers', self.config['renderer'])
         except ImportError:
-            return __import__('mynt.renderers.{0}'.format(self.config['renderer']), globals(), locals(), ['Renderer'], -1).Renderer
+            return __import__('fjord.renderers.{0}'.format(self.config['renderer']), globals(), locals(), ['Renderer'], -1).Renderer
     
     def _get_tag_url(self, name):
         format = self._get_url_format(self.config['tags_url'].endswith('/'))

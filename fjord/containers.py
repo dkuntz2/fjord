@@ -7,14 +7,14 @@ import re
 
 import yaml
 
-from mynt.exceptions import ConfigException, PostException
-from mynt.fs import File
-from mynt.utils import get_logger
+from fjord.exceptions import ConfigException, PostException
+from fjord.fs import File
+from fjord.utils import get_logger
 
 
 yaml.add_constructor('tag:yaml.org,2002:str', lambda loader, node: loader.construct_scalar(node))
 
-logger = get_logger('mynt')
+logger = get_logger('fjord')
 
 
 class Config(dict):

@@ -5,10 +5,10 @@ from __future__ import unicode_literals
 from SimpleHTTPServer import SimpleHTTPRequestHandler
 from SocketServer import TCPServer
 
-from mynt.utils import get_logger
+from fjord.utils import get_logger
 
 
-logger = get_logger('mynt')
+logger = get_logger('fjord')
 
 
 class RequestHandler(SimpleHTTPRequestHandler):

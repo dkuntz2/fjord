@@ -55,28 +55,28 @@ hop in #mynt on irc.freenode.net.
 '''
 from setuptools import find_packages, setup
 
-from mynt import __version__
+from fjord import __version__
 
 
 setup(
-    name = 'mynt',
+    name = 'fjord',
     version = str(__version__),
-    author = 'Andrew Fricke',
-    author_email = 'andrew@mirroredwhite.com',
-    url = 'http://mynt.mirroredwhite.com/',
+    author = 'Don Kuntz',
+    author_email = 'don@dkuntz2.com',
+    url = 'http://dkuntz2.com',
     description = 'A static blog generator.',
     long_description = __doc__,
-    license = 'BSD',
+    license = 'MIT',
     packages = find_packages(),
     include_package_data = True,
     entry_points = {
-        'mynt.parsers.markdown': [
-            'misaka = mynt.parsers.markdown.misaka:Parser'
+        'fjord.parsers.markdown': [
+            'misaka = fjord.parsers.markdown.misaka:Parser'
         ],
-        'mynt.renderers': [
-            'jinja = mynt.renderers.jinja:Renderer'
+        'fjord.renderers': [
+            'jinja = fjord.renderers.jinja:Renderer'
         ],
-        'console_scripts': 'mynt = mynt.main:main'
+        'console_scripts': 'fjord = fjord.main:main'
     },
     install_requires = [
         'houdini.py',

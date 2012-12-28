@@ -1,5 +1,6 @@
 dist/
-mynt.egg-info/
+fjord.egg-info/
 *.pyc
 *.sublime-project
 *.sublime-workspace
+build/

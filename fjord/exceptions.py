@@ -3,7 +3,7 @@
 from __future__ import unicode_literals
 
 
-class MyntException(Exception):
+class FjordException(Exception):
     code = 1
     
     
@@ -24,17 +24,17 @@ class MyntException(Exception):
         return message
 
 
-class OptionException(MyntException):
+class OptionException(FjordException):
     code = 2
 
-class ConfigException(MyntException):
+class ConfigException(FjordException):
     pass
 
-class ParserException(MyntException):
+class ParserException(FjordException):
     pass
 
-class PostException(MyntException):
+class PostException(FjordException):
     pass
 
-class RendererException(MyntException):
+class RendererException(FjordException):
     pass
