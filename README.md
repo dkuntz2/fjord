@@ -1,3 +1,15 @@
+# fjord
+
+fjord is a static site generator based on 
+[https://github.com/Anomareh/mynt](mynt) (at least for now).
+
+Basically, there are a few features I think mynt is missing, and I would like to
+attempt to implement some of the features I want. That's about all this is...
+
+
+
+----
+
 # mynt
 
 _Another static site generator?_
