@@ -66,7 +66,7 @@ setup(
     url = 'http://dkuntz2.com',
     description = 'A static blog generator.',
     long_description = __doc__,
-    license = 'MIT',
+    license = 'BSD',
     packages = find_packages(),
     include_package_data = True,
     entry_points = {
