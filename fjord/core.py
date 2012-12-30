@@ -30,7 +30,7 @@ from fjord.utils import absurl, get_logger, normpath, OrderedDict
 logger = get_logger('fjord')
 
 
-class fjord(object):
+class Fjord(object):
     defaults = {
         'archive_layout': None,
         'archives_url': '/',
@@ -55,6 +55,7 @@ class fjord(object):
     config = {}
     pages = []
     posts = []
+    ignores = []
     tags = OrderedDict()
     
     
@@ -277,7 +278,13 @@ class fjord(object):
             }
             
             data.update(post.frontmatter)
+            if len(data['tags']) == 0:
+                data['tags'].append('_untagged') 
+
             data['tags'].sort(key = unicode.lower)
+            data['tags'] = [tag.title() for tag in data['tags']]
+            #[print(tag) for tag in data['tags']]
+
             
             self.posts.append(data)
             
@@ -317,7 +324,7 @@ class fjord(object):
                 })
             
             tags.sort(key = lambda tag: tag['name'].lower())
-            tags.sort(key = lambda tag: tag['count'], reverse = True)
+            #tags.sort(key = lambda tag: tag['count'], reverse = True)
             
             self.tags.clear()
             
@@ -486,6 +493,7 @@ class fjord(object):
         
         try:
             self.server.serve_forever()
+            self.watch()
         except KeyboardInterrupt:
             self.server.shutdown()
             chdir(cwd)

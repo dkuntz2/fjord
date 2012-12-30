@@ -6,6 +6,27 @@ fjord is a static site generator based on
 Basically, there are a few features I think mynt is missing, and I would like to
 attempt to implement some of the features I want. That's about all this is...
 
+## What makes fjord different?
+
+fjord is slightly different from mynt in the following aspects:
+
+-   All tags are converted to titlecase.
+
+While that's not a huge number of changes (it's only one...), it's enough for
+now. Plus, I'm just sorta hacking this together to give me the features I want.
+
+## Installing
+
+fjord is not yet available from PyPI, but you can install the latest trunk using
+
+    # pip install git+https://github.com/dkuntz2/fjord.git
+
+Alternatively, you can download fjord's repository and run
+
+    $ python2 setup.py build
+
+    # python2 setup.py install
+
 
 
 ----
