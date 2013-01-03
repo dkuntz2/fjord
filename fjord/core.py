@@ -262,15 +262,12 @@ class Fjord(object):
         
         logger.debug('..  src: {0}'.format(path))
         
-        for pos, f in enumerate(path):
+        for f in path:
             post = Post(f)
             
             content = self.parser.parse(self.renderer.from_string(post.bodymatter, post.frontmatter))
             excerpt = re.search(r'\A.*?(?:<p>(.+?)</p>)?', content, re.M | re.S).group(1)
             
-            next = path[pos + 1] if pos < len(path) - 1 else False
-            prev = path[pos - 1] if pos not 0 else False
-
             data = {
                 'content': content,
                 'date': post.date.strftime(self.config['date_format']).decode('utf-8'),
@@ -278,8 +275,8 @@ class Fjord(object):
                 'tags': [],
                 'timestamp': timegm(post.date.utctimetuple()),
                 'url': self._get_post_url(post.date, post.slug),
-                'next': next,
-                'prev': prev
+                'prev': False,
+                'next': False
             }
             
             data.update(post.frontmatter)
@@ -298,6 +295,13 @@ class Fjord(object):
                     self.tags[tag] = []
                 
                 self.tags[tag].append(data)
+
+        for i, post in enumerate(self.posts):
+            prev = self.posts[i - 1] if i != 0 else False
+            next = self.posts[i + 1] if i != len(self.posts) - 1 else False
+
+            post['prev'] = prev
+            post['next'] = next
     
     def _process(self):
         self._parse()

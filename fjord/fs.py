@@ -88,6 +88,7 @@ class Directory(object):
     def __unicode__(self):
         return self.path
 
+
 class EventHandler(FileSystemEventHandler):
     def __init__(self, src, callback):
         self._src = src
