@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>fjord - one of them static-site generators</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <h1>fjord</h1>
+  </header>
+
+  <section>
+    <p>
+      <a href="https://github.com/dkuntz2/fjord">fjord</a> 
+      is a static-site generator, written in Python, based on
+      <a href="http://mynt.mirroredwhite.com">mynt</a>.
+    </p>
+
+    <p>
+      Most people would probably be better off using mynt at this point, simply
+      because all this does is add some new features that I wanted, and didn't
+      really care if they were accepted into the main mynt branch or not. If
+      you're not someone who wants a more stable version, and might like some
+      of the tweaks I've made, you might like this.
+    </p>
+
+    <h2>Changes</h2>
+
+    <p>
+      Currently, fjord has two differences from mynt:
+    </p>
+
+    <ul>
+      <li>
+        The global <code>tags</code> variable is sorted alphabetically, not
+        by original occurance.
+      </li>
+
+      <li>
+        Posts now have a <code>next</code> and <code>prev</code> variable, which
+        hold the next and previous post's data.
+      </li>
+    </ul>
+
+    <h2>Installation</h2>
+
+    <p>
+      fjord can be installed in two ways, using <code>pip</code> or manually.
+    </p>
+
+    <h3>Using pip</h3>
+
+    <p>
+      Just run<br>
+      <code># pip install git+https://github.com/dkuntz2/fjord.git</code>
+    </p>
+
+
+    <h3>Manually</h3>
+
+    <p>
+      Download the fjord repository, and run 
+      <code>$ python2 setup.py build</code> to build it, and <br>
+      <code># python2 setup.py install</code> to install it. You should now
+      be able to use the <code>fjord</code> command.
+  </section>
+
+  <footer>
+    <p>Copyright &copy; 2013 <a href="http://dkuntz2.com">Don Kuntz</a></p>
+  </footer>
+</div>
+
+</body>
+</html>
