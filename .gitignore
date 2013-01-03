@@ -1,6 +1,0 @@
-dist/
-fjord.egg-info/
-*.pyc
-*.sublime-project
-*.sublime-workspace
-build/
