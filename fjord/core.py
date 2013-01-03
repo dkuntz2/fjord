@@ -262,19 +262,24 @@ class Fjord(object):
         
         logger.debug('..  src: {0}'.format(path))
         
-        for f in path:
+        for pos, f in enumerate(path):
             post = Post(f)
             
             content = self.parser.parse(self.renderer.from_string(post.bodymatter, post.frontmatter))
             excerpt = re.search(r'\A.*?(?:<p>(.+?)</p>)?', content, re.M | re.S).group(1)
             
+            next = path[pos + 1] if pos < len(path) - 1 else False
+            prev = path[pos - 1] if pos not 0 else False
+
             data = {
                 'content': content,
                 'date': post.date.strftime(self.config['date_format']).decode('utf-8'),
                 'excerpt': excerpt,
                 'tags': [],
                 'timestamp': timegm(post.date.utctimetuple()),
-                'url': self._get_post_url(post.date, post.slug)
+                'url': self._get_post_url(post.date, post.slug),
+                'next': next,
+                'prev': prev
             }
             
             data.update(post.frontmatter)
