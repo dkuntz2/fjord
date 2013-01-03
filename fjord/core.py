@@ -280,6 +280,7 @@ class Fjord(object):
             }
             
             data.update(post.frontmatter)
+            data['title'] = str(data['title'])
             if len(data['tags']) == 0:
                 data['tags'].append('_untagged') 
 
