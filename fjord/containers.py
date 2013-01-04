@@ -35,7 +35,7 @@ class Post(object):
     def __init__(self, post):
         self.path = post.path
         self.root = post.root
-        self.name = post.name
+        self.name = str(post.name)
         self.extension = post.extension
         
         logger.debug('..  {0}.{1}'.format(self.name, self.extension))

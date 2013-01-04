@@ -262,7 +262,7 @@ class Fjord(object):
         
         logger.debug('..  src: {0}'.format(path))
         
-        for f in path:
+        for i, f in enumerate(path):
             post = Post(f)
             
             content = self.parser.parse(self.renderer.from_string(post.bodymatter, post.frontmatter))
@@ -287,8 +287,9 @@ class Fjord(object):
             data['tags'] = [tag.title() for tag in data['tags']]
             #[print(tag) for tag in data['tags']]
 
-            
+            data['title'] = str(data['title'])
             self.posts.append(data)
+            #self.posts[len(self.posts) - 2]['next'] = self.posts[len(self.posts) - 1]
             
             for tag in data['tags']:
                 if tag not in self.tags:
@@ -296,13 +297,16 @@ class Fjord(object):
                 
                 self.tags[tag].append(data)
 
-        for i, post in enumerate(self.posts):
-            prev = self.posts[i - 1] if i != 0 else False
-            next = self.posts[i + 1] if i != len(self.posts) - 1 else False
+        #posts.sort(key=lamda item:item['date'], )
+        self.posts.sort(key = lambda post: post['timestamp'], reverse = True)
+        for post in self.posts:
+            if self.posts.index(post) != len(self.posts) - 1:
+                post['prev'] = self.posts[self.posts.index(post) + 1]
+            
+            if self.posts.index(post) != 0:
+                post['next'] = self.posts[self.posts.index(post) - 1]
 
-            post['prev'] = prev
-            post['next'] = next
-    
+
     def _process(self):
         self._parse()
         
