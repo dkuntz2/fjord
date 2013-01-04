@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>fjord tasks - tasks for one of them static-site generators</title>
+  <link rel="stylesheet" href="../style.css" />
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <h1>fjord tasks</h1>
+
+    <nav>
+      <ul>
+        <li><a href="#draft.py">draft.py</a></li>
+        <li><a href="#publish.py">publish.py</a></li>
+        <li><a href="#update.py">update.py</a></li>
+        <li><a href="#server.py">server.py</a></li>
+        <li>|</li>
+        <li><a href="../index.html">fjord</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section>
+    <p>
+      <a href="https://github.com/dkuntz2/fjord-tasks">fjord tasks</a> is a
+      collection of python scripts to help automate repetative tasks in
+      <a href="http://dkuntz2.github.com/fjord/">fjord</a>.
+    </p>
+
+    <p>
+      The current tasks are <code>draft.py</code>, <code>publish.py</code>,
+      <code>update.py</code>, and <code>server.py</code>.
+    </p>
+
+    <h2 id="draft.py">draft.py</h2>
+
+    <p>
+      Usage: <code>_tasks/draft.py "[Title of Draft]"</code>
+    </p>
+
+    <p>
+      Places a new file named <code>[title-of-draft].md</code> in the
+      <code>_drafts/</code> directory. Because fjord ignores all files and
+      directories beginning with an <code>_</code>, the drafts directory
+      does not get generated with the site.
+    </p>
+
+    <p>
+      The new file has the basic contents for an empty blog post, but with the
+      title already set.
+    </p>
+
+    <h2 id="publish.py">publish.py</h2>
+
+    <p>
+      Usage: <code>_tasks/publish.py _drafts/[title-of-draft].md</code>
+    </p>
+
+    <p>
+      <code>publish.py</code> requires the <code>_draft/</code> part to be
+      included in the passed in string, because the script is meant to allow
+      tab-completion from the terminal, as opposed to having to remember the
+      file name or title of a draft.
+    </p>
+
+    <p>
+      After calling <code>publish.py</code>, the passed in draft will
+      automatically be moved to the current 
+      <code>_posts/[yyyy]/[mm]/[dd]/</code> directory, and will have
+      <code>yyyy-mm-dd-hh-mm-</code> prepended to it (which is how fjord
+      recognizes when posts are published). After updating your site, the post
+      will be visible
+    </p>
+
+    <h2 id="update.py">update.py</h2>
+
+    <p>
+      Usage: <code>_tasks/update.py "[commit message]"</code>
+    </p>
+
+    <p>
+      Adds all new files to the git repository holding the fjord source, calls
+      generate <br>(<code>fjord gen -f ./ _site/</code>), and <code>rsycn</code>s
+      the <code>_site/</code> directory with your remote host (well, my remote
+      host, but it's easy to change the host url and such).
+    </p>
+
+    <h2 id="server.py">server.py</h2>
+
+    <p>
+      Usage: <code>_tasks/server.py</code>
+    </p>
+
+    <p>
+      Seriously, it's (supposedly) that simple. This server does three things,
+      it kicks off a generic python http server in the <code>_site/</code>
+      directory, it watches the source for all changes (and sets the 
+      <code>base_url</code> variable to 
+      <a href="http://127.0.0.1:8000/">http://127.0.0.1:8000</a>, so the local
+      server is usable), and has <code>sass</code> watch the 
+      <code>_assets/_scss</code> directory for changes. Basically it does
+      everything you need for local development...
+    </p>
+  </section>
+
+  <footer>
+    <p>Copyright &copy; 2013 <a href="http://dkuntz2.com">Don Kuntz</a></p>
+  </footer>
+</div>
+
+</body>
+</html>
