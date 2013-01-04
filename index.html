@@ -39,27 +39,48 @@
     <h2 id="changes">Changes</h2>
 
     <p>
-      Currently, fjord has three differences from mynt:
+      Currently, fjord has four differences from mynt:
     </p>
 
     <ul>
       <li>
-        The global <code>tags</code> variable is sorted alphabetically, not
-        by original occurance.
+        <p>
+          The global <code>tags</code> variable is sorted alphabetically, not
+          by original occurance.
+        </p>
       </li>
 
       <li>
-        Posts now have a <code>next</code> and <code>prev</code> variable, which
-        hold the next and previous post's data.
+        <p>
+          Posts now have a <code>next</code> and <code>prev</code> variable, 
+          which hold the next and previous post's data.
+        </p>
 			</li>
 
 			<li>
-				Post titles are now forced to be strings. If you just had 
-				<code>title: 2013</code> (like I do), mynt would read it as an
-				integer (because that's what it is), which is
-				&ldquo;technically&rdquo; wrong, because all post titles should be
-				strings. And I want them to be, so there.
+  			<p>
+          Post titles are now forced to be strings. If you just had 
+  				<code>title: 2013</code> (like I do), mynt would read it as an
+  				integer (because that's what it is), which is
+  				&ldquo;technically&rdquo; wrong, because all post titles should be
+  				strings. And I want them to be, so there.
+        </p>
 			</li>
+
+      <li>
+          More <a href="http://misaka.61924.nl/">Misaka</a> (the markdown
+          rendering engine used by fjord) extensions and flags have been  
+          enabled, and one disabled. Enabled things: superscript; tables, header 
+          links (toc). Disabled things: hard_wrap (when enabled, all new lines 
+          are translated into <code>&lt;br&gt;</code> tags, which is contrary to 
+          the markdown spec, which is why it's disabled). 
+        </p>
+
+        <p>
+          You can change all of these in your site config. These are just the 
+          defaults.
+        </p>
+      </li>
     </ul>
 
     <h2 id="installation">Installation</h2>
