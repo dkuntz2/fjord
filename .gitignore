@@ -5,4 +5,4 @@ fjord.egg-info/
 *.sublime-workspace
 build/
 
-fjord-html/
+site/
