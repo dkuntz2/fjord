@@ -4,3 +4,5 @@ fjord.egg-info/
 *.sublime-project
 *.sublime-workspace
 build/
+
+fjord-html/
