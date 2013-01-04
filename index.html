@@ -39,7 +39,7 @@
     <h2 id="changes">Changes</h2>
 
     <p>
-      Currently, fjord has two differences from mynt:
+      Currently, fjord has three differences from mynt:
     </p>
 
     <ul>
@@ -51,7 +51,15 @@
       <li>
         Posts now have a <code>next</code> and <code>prev</code> variable, which
         hold the next and previous post's data.
-      </li>
+			</li>
+
+			<li>
+				Post titles are now forced to be strings. If you just had 
+				<code>title: 2013</code> (like I do), mynt would read it as an
+				integer (because that's what it is), which is
+				&ldquo;technically&rdquo; wrong, because all post titles should be
+				strings. And I want them to be, so there.
+			</li>
     </ul>
 
     <h2 id="installation">Installation</h2>
