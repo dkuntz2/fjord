@@ -94,11 +94,14 @@ class Parser(_Parser):
             'autolink': True,
             'fenced_code': True,
             'no_intra_emphasis': True,
-            'strikethrough': True
+            'strikethrough': True,
+            'superscript': True,
+            'tables': True
         },
         'render_flags': {
-            'hard_wrap': True,
-            'smartypants': True
+            'hard_wrap': False,
+            'smartypants': True,
+            'toc': True
         }
     }
     
