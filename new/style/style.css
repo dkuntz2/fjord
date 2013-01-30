@@ -58,7 +58,8 @@ footer a {
   color: #a8d8f0; }
 
 code {
-  font-family: "Source Code Pro", Cousine, "Droid Sans Mono", monospace; }
+  font-family: "Source Code Pro", Cousine, "Droid Sans Mono", monospace;
+  font-size: 15px; }
 
 h2.info {
   font-style: italic;
