@@ -13,9 +13,17 @@ $lightblue: hsl(200, 70%, 80%);
 body {
   padding:0;
   margin:0;
-  font-size:16px;
+  //font-size:16px;
   font-family:$bodyfont;
   background:url(../img/gray_jean.png);
+}
+
+p {
+  font-family: $bodyfont;
+  font-size:16px;
+  line-height:1.5em;
+  padding:0 0 1em;
+  margin:0;
 }
 
 h1, h2, h3, h4 {
