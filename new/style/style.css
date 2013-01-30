@@ -1,0 +1,78 @@
+body {
+  padding: 0;
+  margin: 0;
+  font-size: 16px;
+  font-family: "Droid Sans", Helvetica, Arial;
+  background: url(../img/gray_jean.png); }
+
+h1, h2, h3, h4 {
+  font-family: Bitter, "Droid Sans", Helvetica, Arial; }
+
+h1 {
+  text-align: center; }
+
+h1 {
+  font-size: 3em; }
+
+h2 {
+  font-weight: 400; }
+
+hr {
+  height: 0px;
+  padding: 1em 0 0;
+  margin: 0 0 1em;
+  border: 0px solid transparent;
+  border-bottom: 1px solid #e6e6e6; }
+  hr.notop {
+    padding: 0; }
+
+a {
+  color: #52b1e0;
+  text-decoration: none; }
+  a:hover {
+    text-decoration: underline; }
+
+header h1 {
+  text-align: center;
+  padding: 0;
+  margin: 0; }
+header .subtitle {
+  font-size: 1.2em;
+  color: #999999;
+  text-align: center;
+  font-style: italic;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #e6e6e6; }
+
+footer p {
+  color: #999999;
+  font-style: italic;
+  text-align: center; }
+footer a {
+  color: #a8d8f0; }
+
+h2.info {
+  font-style: italic;
+  color: #646464;
+  font-weight: 400;
+  text-align: center; }
+
+.wrap {
+  width: 80%;
+  max-width: 800px;
+  min-width: 400px;
+  background: white;
+  padding: 50px;
+  margin: -10em auto 50px;
+  box-shadow: 0px 0px 5px #999999; }
+
+.hero-img {
+  background-image: url(../img/milfordsound.jpg);
+  background-repeat: none;
+  background-position: right;
+  height: 500px;
+  width: 100%;
+  border-bottom: 5px solid black;
+  padding: 0;
+  margin: 0;
+  background-color: black; }
