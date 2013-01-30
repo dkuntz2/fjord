@@ -61,6 +61,9 @@ code {
   font-family: "Source Code Pro", Cousine, "Droid Sans Mono", monospace;
   font-size: 15px; }
 
+pre {
+  padding-bottom: 1em; }
+
 h2.info {
   font-style: italic;
   color: #646464;
