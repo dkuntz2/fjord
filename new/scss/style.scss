@@ -1,8 +1,9 @@
 @import 'bourbon/bourbon';
 
 // fonts
-$bodyfont:  "Droid Sans", Helvetica, Arial;
+$bodyfont: "Source Sans Pro", "Droid Sans", Helvetica, Arial, sans-serif;
 $titlefont: Bitter, $bodyfont;
+$codefont: "Source Code Pro", Cousine, "Droid Sans Mono", monospace;
 
 // colors
 $lightgray: hsl(120, 0%, 60%);
@@ -68,13 +69,18 @@ header {
 footer {
   p {
     color:$lightgray;
-    font-style:italic;
+    //font-style:italic;
     text-align:center;
+    font-size:.9em;
   }
 
   a {
     color: $lightblue;
   }
+}
+
+code {
+  font-family: $codefont;
 }
 
 h2.info {
@@ -105,7 +111,7 @@ h2.info {
   height:500px;
   width:100%;
 
-  border-bottom:5px solid black;
+  border-bottom:10px solid black;
   padding:0; margin:0;
   background-color:black;
 }

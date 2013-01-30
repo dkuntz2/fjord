@@ -2,11 +2,11 @@ body {
   padding: 0;
   margin: 0;
   font-size: 16px;
-  font-family: "Droid Sans", Helvetica, Arial;
+  font-family: "Source Sans Pro", "Droid Sans", Helvetica, Arial, sans-serif;
   background: url(../img/gray_jean.png); }
 
 h1, h2, h3, h4 {
-  font-family: Bitter, "Droid Sans", Helvetica, Arial; }
+  font-family: Bitter, "Source Sans Pro", "Droid Sans", Helvetica, Arial, sans-serif; }
 
 h1 {
   text-align: center; }
@@ -46,10 +46,13 @@ header .subtitle {
 
 footer p {
   color: #999999;
-  font-style: italic;
-  text-align: center; }
+  text-align: center;
+  font-size: .9em; }
 footer a {
   color: #a8d8f0; }
+
+code {
+  font-family: "Source Code Pro", Cousine, "Droid Sans Mono", monospace; }
 
 h2.info {
   font-style: italic;
@@ -72,7 +75,7 @@ h2.info {
   background-position: right;
   height: 500px;
   width: 100%;
-  border-bottom: 5px solid black;
+  border-bottom: 10px solid black;
   padding: 0;
   margin: 0;
   background-color: black; }
