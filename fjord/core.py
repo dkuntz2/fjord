@@ -280,7 +280,7 @@ class Fjord(object):
             }
             
             data.update(post.frontmatter)
-            data['title'] = str(data['title'])
+            #data['title'] = str(data['title'])
             if len(data['tags']) == 0:
                 data['tags'].append('_untagged') 
             else:
@@ -300,13 +300,16 @@ class Fjord(object):
                 self.tags[tag].append(data)
 
         #posts.sort(key=lamda item:item['date'], )
+        #self.posts.sort(key = lambda post: post['timestamp'], reverse = True)
         self.posts.sort(key = lambda post: post['timestamp'], reverse = True)
         for post in self.posts:
             if self.posts.index(post) != len(self.posts) - 1:
-                post['prev'] = self.posts[self.posts.index(post) + 1]
+                prev = self.posts[self.posts.index(post) + 1]
+                post['prev'] = {'title': prev['title'], 'url': prev['url']}
             
             if self.posts.index(post) != 0:
-                post['next'] = self.posts[self.posts.index(post) - 1]
+                next = self.posts[self.posts.index(post) - 1]
+                post['next'] = {'title': next['title'], 'url': next['url']}
 
 
     def _process(self):
