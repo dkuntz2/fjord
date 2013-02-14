@@ -283,8 +283,9 @@ class Fjord(object):
             data['title'] = str(data['title'])
             if len(data['tags']) == 0:
                 data['tags'].append('_untagged') 
-
-            data['tags'].sort(key = unicode.lower)
+            else:
+                data['tags'].sort()
+            
             data['tags'] = [tag.title() for tag in data['tags']]
             #[print(tag) for tag in data['tags']]
 
@@ -355,7 +356,7 @@ class Fjord(object):
         self.renderer.register({
             'archives': self.archives,
             'posts': self.posts,
-            'tags': self.tags
+						'tags': self.tags
         })
         
         logger.debug('..  posts')
