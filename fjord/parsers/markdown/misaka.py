@@ -7,7 +7,7 @@ import re
 import houdini as h
 import misaka as m
 
-from mynt.base import Parser as _Parser
+from fjord.base import Parser as _Parser
 
 
 class _Renderer(m.HtmlRenderer):

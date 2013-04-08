@@ -10,9 +10,9 @@ from re import sub
 from jinja2 import Environment, FileSystemLoader, PrefixLoader
 from jinja2.exceptions import TemplateNotFound
 
-from mynt.base import Renderer as _Renderer
-from mynt.exceptions import RendererException
-from mynt.utils import absurl, normpath
+from fjord.base import Renderer as _Renderer
+from fjord.exceptions import RendererException
+from fjord.utils import absurl, normpath
 
 
 class _PrefixLoader(PrefixLoader):
