@@ -4,6 +4,8 @@ from __future__ import unicode_literals
 
 from collections import OrderedDict
 from datetime import datetime
+import gettext
+import locale
 from os import path as op
 from re import sub
 
@@ -51,7 +53,7 @@ class Renderer(_Renderer):
         def _replace(match):
             return self._get_url(match.group(1).replace(self.globals['site']['base_url'], '', 1), True)
         
-        return sub(r'(?<==")({0}[^"]*)'.format(absurl(self.globals['site']['base_url']), ''), _replace, html)
+        return sub(r'(?<==")({0}[^"]*)'.format(self.globals['site']['base_url']), _replace, html)
     
     def _date(self, ts, format = '%A, %B %d, %Y'):
         if ts is None:
@@ -107,3 +109,11 @@ class Renderer(_Renderer):
         self.environment.globals.update(self.globals)
         self.environment.globals['get_asset'] = self._get_asset
         self.environment.globals['get_url'] = self._get_url
+        
+        if 'jinja2.ext.i18n' in self.config['extensions']:
+            try:
+                langs = [locale.getlocale(locale.LC_MESSAGES)[0].decode('utf-8')]
+            except AttributeError:
+                langs = None
+            
+            self.environment.install_gettext_translations(gettext.translation(gettext.textdomain(), normpath(self.path, '_locales'), langs, fallback = True))

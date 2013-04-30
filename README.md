@@ -51,7 +51,7 @@ Latest trunk:
     $ pip install git+https://github.com/Anomareh/mynt.git
 
 
-### Getting Started
+### Getting started
 
 After installing mynt head on over and give the [quickstart][quickstart] page and [docs][docs] a read.
 
@@ -78,5 +78,5 @@ If you run into any issues or have any questions, either open an [issue][issues]
 [misaka]: http://misaka.61924.nl/
 [pygments]: http://pygments.org/
 [pyyaml]: http://pyyaml.org/
-[quickstart]: http://mynt.mirroredwhite.com/quickstart/
+[quickstart]: http://mynt.mirroredwhite.com/docs/quickstart/
 [watchdog]: http://packages.python.org/watchdog/

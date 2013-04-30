@@ -30,6 +30,15 @@ class OptionException(FjordException):
 class ConfigException(FjordException):
     pass
 
+class FileSystemException(FjordException):
+    pass
+
+class OptionException(FjordException):
+    code = 2
+
+class PageException(FjordException):
+    pass
+
 class ParserException(FjordException):
     pass
 

@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import unicode_literals
+from __future__ import print_function, unicode_literals
 
 from argparse import ArgumentParser
 from calendar import timegm
 from copy import deepcopy
 from datetime import datetime
+from glob import iglob
+import locale
 import logging
-from os import chdir, getcwd
+from os import chdir, getcwd, path as op
 import re
 from time import sleep, time
 
@@ -21,7 +23,7 @@ from watchdog.observers import Observer
 
 from fjord import __version__
 from fjord.containers import Config, Page, Post
-from fjord.exceptions import ConfigException, OptionException, RendererException
+from fjord.exceptions import ConfigException, OptionException, PageException, RendererException
 from fjord.fs import Directory, EventHandler, File
 from fjord.server import RequestHandler, Server
 from fjord.utils import absurl, get_logger, normpath, OrderedDict
@@ -34,10 +36,12 @@ class Fjord(object):
     defaults = {
         'archive_layout': None,
         'archives_url': '/',
-        'assets_url': '/assets',
+        'assets_url': '/assets/',
         'base_url': '/',
         'date_format': '%A, %B %d, %Y',
         'domain': None,
+        'include': [],
+        'locale': None,
         'markup': 'markdown',
         'parser': 'misaka',
         'posts_url': '/<year>/<month>/<day>/<title>/',
@@ -109,44 +113,46 @@ class Fjord(object):
         
         gen = sub.add_parser('gen')
         
-        gen.add_argument('src', nargs = '?', default = '.', metavar = 'source', help = 'The location %(prog)s looks for source files.')
-        gen.add_argument('dest', metavar = 'destination', help = 'The location %(prog)s outputs to.')
+        gen.add_argument('src', nargs = '?', default = '.', metavar = 'source', help = 'The directory %(prog)s looks in for source files.')
+        gen.add_argument('dest', metavar = 'destination', help = 'The directory %(prog)s outputs to.')
         
-        gen.add_argument('--base-url', help = 'Sets the site\'s base URL.')
+        gen.add_argument('--base-url', help = 'Sets the site\'s base URL overriding the config setting.')
+        gen.add_argument('--locale', help = 'Sets the locale used by the renderer.')
         
         force = gen.add_mutually_exclusive_group()
         
-        force.add_argument('-c', '--clean', action = 'store_true', help = 'Deletes the destination if it exists before generation.')
-        force.add_argument('-f', '--force', action = 'store_true', help = 'Forces generation emptying the destination if it already exists.')
+        force.add_argument('-c', '--clean', action = 'store_true', help = 'Forces generation by deleting the destination if it exists.')
+        force.add_argument('-f', '--force', action = 'store_true', help = 'Forces generation by emptying the destination if it exists.')
         
         gen.set_defaults(func = self.generate)
         
         init = sub.add_parser('init')
         
-        init.add_argument('dest', metavar = 'destination', help = 'The location %(prog)s initializes.')
+        init.add_argument('dest', metavar = 'destination', help = 'The directory %(prog)s outputs to.')
         
-        init.add_argument('--bare', action = 'store_true', help = 'An empty directory structure is created instead of copying a theme.')
-        init.add_argument('-f', '--force', action = 'store_true', help = 'Forces initialization deleting the destination if it already exists.')
-        init.add_argument('-t', '--theme', default = 'dark', help = 'Sets the theme to be used.')
+        init.add_argument('--bare', action = 'store_true', help = 'Initializes a new site without using a theme.')
+        init.add_argument('-f', '--force', action = 'store_true', help = 'Forces initialization by deleting the destination if it exists.')
+        init.add_argument('-t', '--theme', default = 'dark', help = 'Sets which theme will be used.')
         
         init.set_defaults(func = self.init)
         
         serve = sub.add_parser('serve')
         
-        serve.add_argument('src', nargs = '?', default = '.', metavar = 'source', help = 'The location %(prog)s will serve from.')
+        serve.add_argument('src', nargs = '?', default = '.', metavar = 'source', help = 'The directory %(prog)s will serve.')
         
-        serve.add_argument('--base-url', default = '/', help = 'Sets the site\'s base URL.')
-        serve.add_argument('-p', '--port', default = 8080, type = int, help = 'The port the server will be available at.')
+        serve.add_argument('--base-url', default = '/', help = 'Sets the site\'s base URL overriding the config setting.')
+        serve.add_argument('-p', '--port', default = 8080, type = int, help = 'Sets the port used by the server.')
         
         serve.set_defaults(func = self.serve)
         
         watch = sub.add_parser('watch')
         
-        watch.add_argument('src', nargs = '?', default = '.', metavar = 'source', help = 'The location %(prog)s looks for source files.')
-        watch.add_argument('dest', metavar = 'destination', help = 'The location %(prog)s outputs to.')
+        watch.add_argument('src', nargs = '?', default = '.', metavar = 'source', help = 'The directory %(prog)s looks in for source files.')
+        watch.add_argument('dest', metavar = 'destination', help = 'The directory %(prog)s outputs to.')
         
-        watch.add_argument('--base-url', help = 'Sets the site\'s base URL.')
-        watch.add_argument('-f', '--force', action = 'store_true', help = 'Forces watching emptying the destination if it already exists on changes.')
+        watch.add_argument('--base-url', help = 'Sets the site\'s base URL overriding the config setting.')
+        watch.add_argument('-f', '--force', action = 'store_true', help = 'Forces watching by emptying the destination every time a change is made if it exists.')
+        watch.add_argument('--locale', help = 'Sets the locale used by the renderer.')
         
         watch.set_defaults(func = self.watch)
         
@@ -181,17 +187,17 @@ class Fjord(object):
             '<year>': '%Y',
             '<month>': '%m',
             '<day>': '%d',
-            '<i_month>': '{0}'.format(date.month),
-            '<i_day>': '{0}'.format(date.day),
+            '<i_month>': unicode(date.month),
+            '<i_day>': unicode(date.day),
             '<title>': self._slugify(slug)
         }
         
-        link = self.config['posts_url'].replace('%', '%%')
+        url = self.config['posts_url'].replace('%', '%%')
         
         for match, replace in subs.iteritems():
-            link = link.replace(match, replace)
+            url = url.replace(match, replace)
         
-        return date.strftime(link).decode('utf-8')
+        return date.strftime(url).decode('utf-8')
     
     def _get_renderer(self):
         try:
@@ -230,9 +236,13 @@ class Fjord(object):
         return re.sub(r'<pre><code[^>]+data-lang="([^>]+)"[^>]*>(.+?)</code></pre>', self._highlight, html, flags = re.S)
     
     def _slugify(self, text):
-        text = re.sub(r'\s+', '-', text.strip())
+        slug = re.sub(r'\s+', '-', text.strip())
+        slug = re.sub(r'[^a-z0-9\-_.]', '', slug, flags = re.I)
         
-        return re.sub(r'[^a-z0-9\-_.]', '', text, flags = re.I)
+        if slug == '..':
+            raise PageException('Invalid slug.')
+        
+        return slug
     
     def _update_config(self):
         self.config = deepcopy(self.defaults)
@@ -243,12 +253,28 @@ class Fjord(object):
             f = File(normpath(self.src.path, 'config' + ext))
             
             if f.exists:
-                logger.debug('..  found: {0}'.format(f.path))
+                logger.debug('..  found: %s', f.path)
                 
                 try:
                     self.config.update(Config(f.content))
                 except ConfigException as e:
                     raise ConfigException(e.message, 'src: {0}'.format(f.path))
+                
+                self.config['locale'] = self.opts.get('locale', self.config['locale'])
+                
+                self.config['assets_url'] = absurl(self.config['assets_url'], '')
+                self.config['base_url'] = absurl(self.opts.get('base_url', self.config['base_url']), '')
+                
+                for setting in ('archives_url', 'posts_url', 'tags_url'):
+                    self.config[setting] = absurl(self.config[setting])
+                
+                for setting in ('archives_url', 'assets_url', 'base_url', 'posts_url', 'tags_url'):
+                    if re.search(r'(?:^\.{2}/|/\.{2}$|/\.{2}/)', self.config[setting]):
+                        raise ConfigException('Invalid config setting.', 'setting: {0}'.format(setting), 'path traversal is not allowed')
+                
+                for pattern in self.config['include']:
+                    if op.commonprefix((self.src.path, normpath(self.src.path, pattern))) != self.src.path:
+                        raise ConfigException('Invalid include path.', 'path: {0}'.format(pattern), 'path traversal is not allowed')
                 
                 break
         else:
@@ -260,7 +286,7 @@ class Fjord(object):
         
         path = Directory(normpath(self.src.path, '_posts'))
         
-        logger.debug('..  src: {0}'.format(path))
+        logger.debug('..  src: %s', path)
         
         for i, f in enumerate(path):
             post = Post(f)
@@ -268,29 +294,29 @@ class Fjord(object):
             content = self.parser.parse(self.renderer.from_string(post.bodymatter, post.frontmatter))
             excerpt = re.search(r'\A.*?(?:<p>(.+?)</p>)?', content, re.M | re.S).group(1)
             
-            data = {
-                'content': content,
-                'date': post.date.strftime(self.config['date_format']).decode('utf-8'),
-                'excerpt': excerpt,
-                'tags': [],
-                'timestamp': timegm(post.date.utctimetuple()),
-                'url': self._get_post_url(post.date, post.slug),
-                'prev': False,
-                'next': False
-            }
+            try:
+                data = {
+                    'content': content,
+                    'date': post.date.strftime(self.config['date_format']).decode('utf-8'),
+                    'excerpt': excerpt,
+                    'tags': [],
+                    'timestamp': timegm(post.date.utctimetuple()),
+                    'url': self._get_post_url(post.date, post.slug),
+                    'prev': False,
+                    'next': False
+                }
+            except PageException:
+                raise PageException('Invalid post slug.', 'src: {0}'.format(post.path))
             
             data.update(post.frontmatter)
-            #data['title'] = str(data['title'])
             if len(data['tags']) == 0:
                 data['tags'].append('_untagged') 
 
             data['tags'].sort(key = unicode.lower)
             data['tags'] = [tag.title() for tag in data['tags']]
-            #[print(tag) for tag in data['tags']]
 
             data['title'] = str(data['title'])
             self.posts.append(data)
-            #self.posts[len(self.posts) - 2]['next'] = self.posts[len(self.posts) - 1]
             
             for tag in data['tags']:
                 if tag not in self.tags:
@@ -298,8 +324,6 @@ class Fjord(object):
                 
                 self.tags[tag].append(data)
 
-        #posts.sort(key=lamda item:item['date'], )
-        #self.posts.sort(key = lambda post: post['timestamp'], reverse = True)
         self.posts.sort(key = lambda post: post['timestamp'], reverse = True)
         for post in self.posts:
             if self.posts.index(post) != len(self.posts) - 1:
@@ -332,16 +356,23 @@ class Fjord(object):
             for name, posts in self.tags:
                 posts.sort(key = lambda post: post['timestamp'], reverse = True)
                 
-                tags.append({
-                    'archives': self._archive(posts),
-                    'count': len(posts),
-                    'name': name,
-                    'posts': posts,
-                    'url': self._get_tag_url(name)
-                })
+                try:
+                    tags.append({
+                        'archives': self._archive(posts),
+                        'count': len(posts),
+                        'name': name,
+                        'posts': posts,
+                        'url': self._get_tag_url(name)
+                    })
+                except PageException:
+                    message = ['tag: {0}'.format(name)]
+                    
+                    for post in posts:
+                        message.append('post: {0}'.format(post.get('title', post['url'])))
+                    
+                    raise PageException('Invalid tag slug.', *message)
             
             tags.sort(key = lambda tag: tag['name'].lower())
-            #tags.sort(key = lambda tag: tag['count'], reverse = True)
             
             self.tags.clear()
             
@@ -404,13 +435,15 @@ class Fjord(object):
                 ))
     
     def _generate(self):
-        logger.debug('>> Initializing\n..  src:  {0}\n..  dest: {1}'.format(self.src.path, self.dest.path))
+        logger.debug('>> Initializing\n..  src:  %s\n..  dest: %s', self.src.path, self.dest.path)
         
         self._update_config()
         
-        for opt in ('base_url',):
-            if opt in self.opts:
-                self.config[opt] = self.opts[opt]
+        if self.config['locale']:
+            try:
+                locale.setlocale(locale.LC_ALL, (self.config['locale'], 'utf-8'))
+            except locale.Error:
+                raise ConfigException('Locale not available.', 'run `locale -a` to see available locales')
         
         self.renderer.register({'site': self.config})
         
@@ -432,15 +465,20 @@ class Fjord(object):
         for page in self.pages:
             page.mk()
         
-        if assets_src.exists:
-            for asset in assets_src:
-                asset.cp(asset.path.replace(assets_src.path, assets_dest.path))
+        assets_src.cp(assets_dest.path)
         
-        logger.info('Completed in {0:.3f}s'.format(time() - self._start))
+        for pattern in self.config['include']:
+            for path in iglob(normpath(self.src.path, pattern)):
+                dest = path.replace(self.src.path, self.dest.path)
+                
+                if op.isdir(path):
+                    Directory(path).cp(dest, False)
+                elif op.isfile(path):
+                    File(path).cp(dest)
+        
+        logger.info('Completed in %.3fs', time() - self._start)
     
     def _regenerate(self):
-        logger.setLevel(logging.ERROR)
-        
         self._parser = None
         self._renderer = None
         self._start = time()
@@ -453,8 +491,7 @@ class Fjord(object):
         
         self._generate()
         
-        logger.setLevel(getattr(logging, self.opts['level'], logging.INFO))
-        logger.info('Regenerated in {0:.3f}s'.format(time() - self._start))
+        logger.info('Regenerated in %.3fs', time() - self._start)
     
     
     def generate(self):
@@ -465,10 +502,8 @@ class Fjord(object):
             raise OptionException('Source must exist.')
         elif self.src == self.dest:
             raise OptionException('Source and destination must differ.')
-        elif self.src.path in ('/', '//') or self.dest.path in ('/', '//'):
-            raise OptionException('Root is not a valid source or destination.')
         elif self.dest.exists and not (self.opts['force'] or self.opts['clean']):
-            raise OptionException('Destination already exists.', 'the -c or -f option must be used to force generation')
+            raise OptionException('Destination already exists.', 'the -c or -f flag must be passed to force generation by deleting or emptying the destination')
         
         self._generate()
     
@@ -479,19 +514,21 @@ class Fjord(object):
         if not self.src.exists:
             raise OptionException('Theme not found.')
         elif self.dest.exists and not self.opts['force']:
-            raise OptionException('Destination already exists.', 'the -f option must be used to force initialization by deleting the destination')
+            raise OptionException('Destination already exists.', 'the -f flag must be passed to force initialization by deleting the destination')
         
         logger.info('>> Initializing')
         
         if self.opts['bare']:
-            for d in ['_assets/css', '_assets/images', '_assets/js', '_templates', '_posts']:
+            self.dest.rm()
+            
+            for d in ('_assets/css', '_assets/images', '_assets/js', '_templates', '_posts'):
                 Directory(normpath(self.dest.path, d)).mk()
             
             File(normpath(self.dest.path, 'config.yml')).mk()
         else:
-            self.src.cp(self.dest.path)
+            self.src.cp(self.dest.path, False)
         
-        logger.info('Completed in {0:.3f}s'.format(time() - self._start))
+        logger.info('Completed in %.3fs', time() - self._start)
     
     def serve(self):
         self.src = Directory(self.opts['src'])
@@ -500,7 +537,7 @@ class Fjord(object):
         if not self.src.exists:
             raise OptionException('Source must exist.')
         
-        logger.info('>> Serving at 127.0.0.1:{0}'.format(self.opts['port']))
+        logger.info('>> Serving at 127.0.0.1:%s', self.opts['port'])
         logger.info('Press ctrl+c to stop.')
         
         cwd = getcwd()
@@ -525,10 +562,8 @@ class Fjord(object):
             raise OptionException('Source must exist.')
         elif self.src == self.dest:
             raise OptionException('Source and destination must differ.')
-        elif self.src.path in ('/', '//') or self.dest.path in ('/', '//'):
-            raise OptionException('Root is not a valid source or destination.')
         elif self.dest.exists and not self.opts['force']:
-            raise OptionException('Destination already exists.', 'the -f option must be used to force watching by emptying the destination on changes')
+            raise OptionException('Destination already exists.', 'the -f flag must be passed to force watching by emptying the destination every time a change is made')
         
         logger.info('>> Watching')
         logger.info('Press ctrl+c to stop.')
