@@ -218,7 +218,7 @@ class Fjord(object):
     
     def _highlight(self, match):
             language, code = match.groups()
-            formatter = HtmlFormatter(linenos=False)
+            formatter = HtmlFormatter(linenos=True)
             
             code = h.unescape_html(code.encode('utf-8')).decode('utf-8')
             
