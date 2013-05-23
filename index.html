@@ -2,45 +2,65 @@
 <html>
 <head>
   <title>fjord - one of them static-site generators</title>
-  <link rel="stylesheet" href="style.css" />
+
+  <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,400italic,600italic|Source+Code+Pro:400|Bitter:400,700,400italic' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="style/style.css" />
 </head>
 <body>
 
-<div class="wrap">
+<div class="hero-img">&nbsp;</div>
+
+<article class="wrap">
   <header>
     <h1>fjord</h1>
-
-    <nav>
-      <ul>
-        <li><a href="#changes">Changes</a></li>
-        <li><a href="#installation">Installation</a></li>
-        <li><a href="#using">Using</a></li>
-        <li>|</li>
-        <li><a href="tasks/index.html">Tasks</a></li>
-      </ul>
-    </nav>
+    <!--<p class="subtitle">
+      one of them static-site generators
+    </p>-->
   </header>
 
   <section>
+    <hr>
+    <h2 class="info">
+      fjord is an easy to use blog-aware static-site generator
+    </h2>
+    <hr class="notop">
+
     <p>
-      <a href="https://github.com/dkuntz2/fjord">fjord</a> 
-      is a static-site generator, written in Python, based on
-      <a href="http://mynt.mirroredwhite.com">mynt</a>.
+      fjord is a blog-aware static-site generator written in python. fjord
+      offers users a <a href="http://jekyllrb.com">jekyll</a>-like experience,
+      but is written in python, for those of us who don't like ruby.
     </p>
 
     <p>
-      Most people would probably be better off using mynt at this point, simply
-      because all this does is add some new features that I wanted, and didn't
-      really care if they were accepted into the main mynt branch or not. If
-      you're not someone who wants a more stable version, and might like some
-      of the tweaks I've made, you might like this.
+      fjord is based off of <a href="http://mynt.mirroredwhite.com">mynt</a>,
+      but includes a few additions and modifications. If you're already running
+      a mynt-based site, switching to fjord is as easy as changing your commands
+      from <code>mynt</code> to <code>fjord</code>.
     </p>
 
-    <h2 id="changes">Changes</h2>
+    <h2>More Static-Site Generation?</h2>
 
     <p>
-      Currently, fjord has four differences from mynt:
+      Sure, there are tons of static-site generators out there already, and a
+      few of them are written in python, just like the parent of fjord, but
+      what's wrong with adding another one to the fold?
     </p>
+
+    <p>
+      fjord exists in the spirit of open-source software, if you don't like how
+      something works, make it work the way you want it to.
+    </p>
+
+    <h2>What's Different?</h2>
+
+    <p>
+      If you want an overview of the main features of fjord, you should check
+      out the <a href="http://mynt.mirroredwhite.com/docs/">mynt docs</a>. If,
+      after reading the differences list, you don't think you'll use the
+      differences, I suggest using mynt.
+    </p>
+
+    <p>There are four key differences between fjord and mynt:</p>
 
     <ul>
       <li>
@@ -67,74 +87,74 @@
 
       <li>
         <p>
-          Posts now have a <code>next</code> and <code>prev</code> variable, 
-          which hold the next and previous post's data.
+          Posts have two additional variables, <code>post.prev</code> and 
+          <code>post.next</code>, which contain the title and url of the
+          previous and next posts, which makes it easier to paginate your blog.
         </p>
-			</li>
-
-			<li>
-  			<p>
-          Post titles are now forced to be strings. If you just had 
-  				<code>title: 2013</code> (like I do), mynt would read it as an
-  				integer (because that's what it is), which is
-  				&ldquo;technically&rdquo; wrong, because all post titles should be
-  				strings. And I want them to be, so there.
-        </p>
-			</li>
+      </li>
 
       <li>
-          More <a href="http://misaka.61924.nl/">Misaka</a> (the markdown
-          rendering engine used by fjord) extensions and flags have been  
-          enabled, and one disabled. Enabled things: superscript; tables, header 
-          links (toc). Disabled things: hard_wrap (when enabled, all new lines 
-          are translated into <code>&lt;br&gt;</code> tags, which is contrary to 
-          the markdown spec, which is why it's disabled). 
-        </p>
-
         <p>
-          You can change all of these in your site config. These are just the 
-          defaults.
+          The global <code>tags</code> variable is sorted alphabetically in 
+          fjord. In mynt, it's sorted by the tag's original ocurrance.
+        </p>
+      </li>
+
+      <li>
+        <p>
+          Post titles are forced to be strings. Nothing wild, but it's due to
+          how I have my system setup.
+        </p>
+      </li>
+
+      <li>
+        <p>
+          The default <a href="http://misaka.61924.nl/">Misaka</a> (fjord and
+          mynt's default markdown rendering engine) flags have been changed a
+          little. Superscript, tables, and header links have been enabled, and
+          hard_wrap has been disabled.
         </p>
       </li>
     </ul>
 
-    <h2 id="installation">Installation</h2>
+    <h2>Installation</h2>
 
     <p>
-      fjord can be installed in two ways, using <code>pip</code> or manually.
+      fjord has two installation options, using pip or installing it from the
+      source, which is essentially the same thing as using pip in this instance.
     </p>
-
-    <h3>Using pip</h3>
 
     <p>
-      Just run<br>
-      <code># pip install git+https://github.com/dkuntz2/fjord.git</code>
+      Because fjord is currently under development, it is not in the PyPI, but
+      it can still be installed with pip, just run
     </p>
 
-
-    <h3>Manually</h3>
+    <pre><code># pip install git+https://github.com/dkuntz2/fjord.git</code></pre>
 
     <p>
-      Download the fjord repository, and run 
-      <code>$ python2 setup.py build</code> to build it, and <br>
-      <code># python2 setup.py install</code> to install it. You should now
-      be able to use the <code>fjord</code> command.
+      Alternatively, if you want to install it from the source, you can download
+      the fjord repository, and run 
+      <pre><code>$ ./make.sh</code></pre>
     </p>
 
-    <h2 id="using">Using</h2>
+    <h2>Sites Using fjord</h2>
 
-    <p>
-      I currently don't have any unique documentation for fjord (at some point
-      in the future I might), and suggest checking out
-      <a href="http://mynt.mirroredwhite.com/docs/">mynt's documentation</a> for
-      getting started.
-    </p>
+    <p>If you're using fjord, feel free to send me an email (<a href="mailto:don@kuntz.co">don@kuntz.co</a>) and I'll add you to the list.</p>
+
+    <ul>
+      <li><a href="http://dkuntz2.com">http://dkuntz2.com - Don Kuntz</a></li>
+    </ul>
   </section>
 
   <footer>
-    <p>Copyright &copy; 2013 <a href="http://dkuntz2.com">Don Kuntz</a></p>
+    <hr>
+    <p>Copyright &copy; 2013 <a href="http://dkuntz2.com">Don Kuntz</a><br>
+    <a href="http://i.images.cdn.fotopedia.com/f99mkad2ks77v-SRVJsY1Homg-hd/World_Heritage_Sites/Oceania/New_Zealand/Te_Wahipounamu_-_South_West_New_Zealand/Fiordland_National_Park/Milford_Sound/Milford_Sound.jpg">Milford Sound</a> image (by <a href="http://www.fotopedia.com/users/f99mkad2ks77v">Stefano Costanzo</a>) licensed under <a href="http://creativecommons.org/licenses/by-nc/3.0/">CC BY-NC 3.0</a>
   </footer>
-</div>
+</article>
+
+
+
 
 </body>
 </html>
