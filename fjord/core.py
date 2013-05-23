@@ -290,6 +290,9 @@ class Fjord(object):
         
         for i, f in enumerate(path):
             post = Post(f)
+
+            if post.draft:
+                continue
             
             content = self.parser.parse(self.renderer.from_string(post.bodymatter, post.frontmatter))
             excerpt = re.search(r'\A.*?(?:<p>(.+?)</p>)?', content, re.M | re.S).group(1)

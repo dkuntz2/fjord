@@ -37,14 +37,9 @@ class Post(object):
         self.root = post.root
         self.name = str(post.name)
         self.extension = post.extension
+        self.draft = False
         
         logger.debug('..  %s%s', self.name, self.extension)
-        
-        try:
-            date, self.slug = re.match(r'(\d{4}(?:-\d{2}-\d{2}){1,2})-(.+)', self.name).groups()
-            self.date = self._get_date(post.mtime, date)
-        except (AttributeError, ValueError):
-            raise PostException('Invalid post filename.', 'src: {0}'.format(self.path), 'must be of the format \'YYYY-MM-DD[-HH-MM]-Post-title.md\'')
         
         try:
             frontmatter, self.bodymatter = re.search(r'\A---\s+^(.+?)$\s+---\s*(.*)\Z', post.content, re.M | re.S).groups()
@@ -56,8 +51,21 @@ class Post(object):
         except ConfigException as e:
             raise ConfigException('Invalid post frontmatter.', 'src: {0}'.format(self.path), e.message.lower().replace('.', ''))
         
+        try:
+            date, self.slug = re.match(r'(\d{4}(?:-\d{2}-\d{2}){1,2})-(.+)', self.name).groups()
+            if 'date' in self.frontmatter:
+                date = str(self.frontmatter['date'])
+
+            self.date = self._get_date(post.mtime, date)
+        except (AttributeError, ValueError):
+            raise PostException('Invalid post filename.', 'src: {0}'.format(self.path), 'must be of the format \'YYYY-MM-DD[-HH-MM]-Post-title.md\'')
+        
         if 'layout' not in self.frontmatter:
             raise PostException('Invalid post frontmatter.', 'src: {0}'.format(self.path), 'layout must be set')
+
+        if 'draft' in self.frontmatter:
+            self.draft = self.frontmatter['draft']
+
     
     
     def _get_date(self, mtime, date):
