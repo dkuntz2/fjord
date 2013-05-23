@@ -59,6 +59,7 @@ class Fjord(object):
     config = {}
     pages = []
     posts = []
+    drafts = []
     ignores = []
     tags = OrderedDict()
     
@@ -290,9 +291,6 @@ class Fjord(object):
         
         for i, f in enumerate(path):
             post = Post(f)
-
-            if post.draft:
-                continue
             
             content = self.parser.parse(self.renderer.from_string(post.bodymatter, post.frontmatter))
             excerpt = re.search(r'\A.*?(?:<p>(.+?)</p>)?', content, re.M | re.S).group(1)
@@ -320,13 +318,18 @@ class Fjord(object):
             data['tags'] = [tag.title() for tag in data['tags']]
 
             data['title'] = str(data['title'])
-            self.posts.append(data)
-            
-            for tag in data['tags']:
-                if tag not in self.tags:
-                    self.tags[tag] = []
+
+            if post.draft:
+                data['url'] = '/drafts/' + self._slugify(post.slug)
+                self.drafts.append(data)
+            else:
+                self.posts.append(data)
                 
-                self.tags[tag].append(data)
+                for tag in data['tags']:
+                    if tag not in self.tags:
+                        self.tags[tag] = []
+                    
+                    self.tags[tag].append(data)
 
         self.posts.sort(key = lambda post: post['timestamp'], reverse = True)
         for post in self.posts:
@@ -407,6 +410,16 @@ class Fjord(object):
             except RendererException as e:
                 raise RendererException(e.message, '{0} in post \'{1}\''.format(post['layout'], post['title']))
         
+        logger.debug('..  drafts')
+        for draft in self.drafts:
+            try:
+                self.pages.append(Page(
+                    self._get_path(draft['url']),
+                    self._pygmentize(self.renderer.render(post['layout'], {'post': post}))
+                ))
+            except RendererException as e:
+                raise RendererException(e.message, '{0} in draft\'{1}\''.format(draft['layout'], draft['title']))
+
         logger.debug('..  pages')
         
         for f in self.src:
