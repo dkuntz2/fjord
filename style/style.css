@@ -2,7 +2,8 @@ body {
   padding: 0;
   margin: 0;
   font-family: "Source Sans Pro", "Droid Sans", Helvetica, Arial, sans-serif;
-  background: url(../img/gray_jean.png); }
+  background: url(../img/gray_jean.png);
+  font-weight: 300; }
 
 p {
   font-family: "Source Sans Pro", "Droid Sans", Helvetica, Arial, sans-serif;
